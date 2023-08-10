@@ -7,12 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PessoaService {
 
+    private final PessoaRepository pessoaRepository;
+
     @Autowired
-    public PessoaRepository pessoaRepository;
+    public PessoaService(PessoaRepository pessoaRepository) {
+        this.pessoaRepository = pessoaRepository;
+    }
 
     public Pessoa cadastrarPessoa(Pessoa pessoa) {
         pessoa.setNome(pessoa.getNome().trim());
@@ -20,21 +25,20 @@ public class PessoaService {
     }
 
     public Pessoa editarPessoa(Pessoa pessoa) {
-
-        final Pessoa pessoaBanco = this.pessoaRepository.findById(pessoa.getId()).orElse(null);
-        Assert.notNull(pessoaBanco, "Pessoa não encontrada!");
-        Assert.isTrue(pessoaBanco.getId().equals(pessoa.getId()), "ID da Pessoa informada não " +
-                "é a mesmo que o ID da Pessoa a ser atualizado!");
+        Optional<Pessoa> pessoaBanco = pessoaRepository.findById(pessoa.getId());
+        Assert.isTrue(pessoaBanco.isPresent(), "Pessoa não encontrada!");
+        Assert.isTrue(pessoaBanco.get().getId().equals(pessoa.getId()),
+                "ID da Pessoa informada não é o mesmo que o ID da Pessoa a ser atualizado!");
 
         return pessoaRepository.save(pessoa);
     }
 
-    public void exluirPessoa(Long id) {
-        if (pessoaRepository.findById(id).isPresent()){
+    public void excluirPessoa(Long id) {
+        Optional<Pessoa> pessoa = pessoaRepository.findById(id);
+        if (pessoa.isPresent()) {
             pessoaRepository.deleteById(id);
-        }else{
+        } else {
             throw new IllegalArgumentException("ID da Pessoa não foi encontrado.");
         }
-
     }
 }

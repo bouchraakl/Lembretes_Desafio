@@ -16,14 +16,17 @@ import java.util.Optional;
 @RequestMapping("/api/pessoa")
 public class PessoaController {
 
-    @Autowired
-    public PessoaRepository pessoaRepository;
+    private final PessoaRepository pessoaRepository;
+    private final PessoaService pessoaService;
 
     @Autowired
-    public PessoaService pessoaService;
+    public PessoaController(PessoaRepository pessoaRepository, PessoaService pessoaService) {
+        this.pessoaRepository = pessoaRepository;
+        this.pessoaService = pessoaService;
+    }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllPessoas(){
+    public ResponseEntity<?> getAllPessoas() {
         return ResponseEntity.ok(pessoaRepository.findAll());
     }
 
@@ -37,7 +40,7 @@ public class PessoaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> cadastrarPessoa(@RequestBody @Validated Pessoa pessoa){
+    public ResponseEntity<?> cadastrarPessoa(@RequestBody @Validated Pessoa pessoa) {
         try {
             final Pessoa pessoa1 = this.pessoaService.cadastrarPessoa(pessoa);
             return ResponseEntity.ok(String.format("Pessoa [ %s ] cadastrada com sucesso!", pessoa1.getNome()));
@@ -50,7 +53,7 @@ public class PessoaController {
     public ResponseEntity<?> editarPessoa(@RequestBody @Validated final Pessoa pessoa) {
         try {
             final Pessoa pessoaEdited = this.pessoaService.editarPessoa(pessoa);
-            return ResponseEntity.ok( String.format("Pessoa [ %s ] atualizada com sucesso", pessoaEdited.getNome()));
+            return ResponseEntity.ok(String.format("Pessoa [ %s ] atualizada com sucesso", pessoaEdited.getNome()));
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.internalServerError().body("Error: " + e.getCause().getCause().getMessage());
         } catch (RuntimeException e) {
@@ -61,7 +64,7 @@ public class PessoaController {
     @DeleteMapping
     public ResponseEntity<?> excluirPessoa(@RequestParam("id") final Long id) {
         try {
-            pessoaService.exluirPessoa(id);
+            pessoaService.excluirPessoa(id);
             return ResponseEntity.ok("Registro excluido com sucesso");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
