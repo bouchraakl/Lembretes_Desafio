@@ -1,6 +1,6 @@
 package com.desafio.lembretes.controller;
 
-import com.desafio.lembretes.entity.Lembrete;
+import com.desafio.lembretes.dto.LembreteDTO;
 import com.desafio.lembretes.repository.LembreteRepository;
 import com.desafio.lembretes.service.LembreteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lembrete")
@@ -26,25 +25,23 @@ public class LembreteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lembrete> getLembreteById(@PathVariable("id") Long id) {
-        Optional<Lembrete> lembrete = lembreteRepository.findById(id);
-        return lembrete.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public LembreteDTO getLembreteById(@PathVariable("id") Long id) {
+        return lembreteService.findById(id);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Lembrete>> getAllLembrentes() {
-        List<Lembrete> lembretes = lembreteRepository.findAll();
-        return ResponseEntity.ok(lembretes);
+    public List<LembreteDTO> getAllLembrentes() {
+        return lembreteService.findAll();
     }
 
     @GetMapping("/all/{nome}")
-    public ResponseEntity<List<Lembrete>> getAllLembretesByPessoa(@PathVariable("nome") String nome) {
-        List<Lembrete> lembretes = lembreteRepository.findAllByPessoaNome(nome);
-        return ResponseEntity.ok(lembretes);
+    public List<LembreteDTO> getAllLembretesByPessoa(@PathVariable("nome") String nome) {
+        List<LembreteDTO> lembretes = lembreteService.findAllByPessoaNome(nome);
+        return ResponseEntity.ok(lembretes).getBody();
     }
 
     @PostMapping
-    public ResponseEntity<String> createLembrete(@RequestBody @Validated Lembrete lembrete) {
+    public ResponseEntity<String> createLembrete(@RequestBody @Validated LembreteDTO lembrete) {
         try {
             lembreteService.createLembrete(lembrete);
             return ResponseEntity.ok("Lembrete criado com sucesso.");
@@ -54,7 +51,7 @@ public class LembreteController {
     }
 
     @PutMapping
-    public ResponseEntity<String> editarLembrete(@RequestBody @Validated Lembrete lembrete) {
+    public ResponseEntity<String> editarLembrete(@RequestBody @Validated LembreteDTO lembrete) {
         try {
             lembreteService.editarLembrete(lembrete);
             return ResponseEntity.ok(String.format("Lembrete com título [%s] atualizado com sucesso.",

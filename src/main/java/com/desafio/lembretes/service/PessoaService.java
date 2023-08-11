@@ -22,16 +22,12 @@ public class PessoaService {
     }
 
     public Pessoa cadastrarPessoa(PessoaDTO pessoadto) {
-        Pessoa pessoa = new Pessoa();
-        pessoa.setNome(pessoadto.getNome());
-        pessoa.setId(pessoadto.getId());
+        Pessoa pessoa = toPessoa(pessoadto);
         return pessoaRepository.save(pessoa);
     }
 
     public Pessoa editarPessoa(PessoaDTO pessoadto) {
-        Pessoa pessoa = new Pessoa();
-        pessoa.setNome(pessoadto.getNome());
-        pessoa.setId(pessoadto.getId());
+        Pessoa pessoa = toPessoa(pessoadto);
         Optional<Pessoa> pessoaBanco = pessoaRepository.findById(pessoa.getId());
         Assert.isTrue(pessoaBanco.isPresent(), "Pessoa não encontrada!");
         Assert.isTrue(pessoaBanco.get().getId().equals(pessoa.getId()),

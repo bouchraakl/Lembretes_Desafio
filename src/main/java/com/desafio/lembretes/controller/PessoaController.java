@@ -46,7 +46,7 @@ public class PessoaController {
     }
 
     @PutMapping
-    public ResponseEntity<?> editarPessoa(@RequestBody @Validated final PessoaDTO pessoa) {
+    public ResponseEntity<String> editarPessoa(@RequestBody @Validated final PessoaDTO pessoa) {
         try {
             final Pessoa pessoaEdited = this.pessoaService.editarPessoa(pessoa);
             return ResponseEntity.ok(String.format("Pessoa [ %s ] atualizada com sucesso", pessoaEdited.getNome()));

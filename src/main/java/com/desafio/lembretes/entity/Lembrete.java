@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "lembretes", schema = "public")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "pessoa")
 public class Lembrete {
 
     @Id
