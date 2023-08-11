@@ -1,16 +1,16 @@
 package com.desafio.lembretes.controller;
 
+import com.desafio.lembretes.dto.PessoaDTO;
 import com.desafio.lembretes.entity.Pessoa;
 import com.desafio.lembretes.repository.PessoaRepository;
 import com.desafio.lembretes.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/pessoa")
@@ -26,21 +26,17 @@ public class PessoaController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getAllPessoas() {
-        return ResponseEntity.ok(pessoaRepository.findAll());
+    public ResponseEntity<List<PessoaDTO>> getAllPessoas() {
+        return ResponseEntity.ok(pessoaService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPessoaById(@PathVariable("id") Long id) {
-        Optional<Pessoa> pessoa = pessoaRepository.findById(id);
-        if (pessoa.isEmpty()) {
-            return ResponseEntity.badRequest().body("ID não encontrado!");
-        }
-        return ResponseEntity.ok(pessoa.get());
+    public PessoaDTO getPessoaById(@PathVariable("id") Long id) {
+        return pessoaService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> cadastrarPessoa(@RequestBody @Validated Pessoa pessoa) {
+    public ResponseEntity<String> cadastrarPessoa(@RequestBody @Validated PessoaDTO pessoa) {
         try {
             final Pessoa pessoa1 = this.pessoaService.cadastrarPessoa(pessoa);
             return ResponseEntity.ok(String.format("Pessoa [ %s ] cadastrada com sucesso!", pessoa1.getNome()));
@@ -50,7 +46,7 @@ public class PessoaController {
     }
 
     @PutMapping
-    public ResponseEntity<?> editarPessoa(@RequestBody @Validated final Pessoa pessoa) {
+    public ResponseEntity<?> editarPessoa(@RequestBody @Validated final PessoaDTO pessoa) {
         try {
             final Pessoa pessoaEdited = this.pessoaService.editarPessoa(pessoa);
             return ResponseEntity.ok(String.format("Pessoa [ %s ] atualizada com sucesso", pessoaEdited.getNome()));
@@ -62,7 +58,7 @@ public class PessoaController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> excluirPessoa(@RequestParam("id") final Long id) {
+    public ResponseEntity<String> excluirPessoa(@RequestParam("id") final Long id) {
         try {
             pessoaService.excluirPessoa(id);
             return ResponseEntity.ok("Registro excluido com sucesso");
