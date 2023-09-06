@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 @Table(name = "pessoas", schema = "public")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(exclude = "lembretes")
 public class Pessoa {
 
@@ -34,4 +36,8 @@ public class Pessoa {
     @JsonManagedReference
     private List<Lembrete> lembretes;
 
+    public Pessoa(Long id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 }

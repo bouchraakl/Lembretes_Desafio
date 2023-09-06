@@ -1,5 +1,6 @@
 package com.desafio.lembretes.controller;
 
+import com.desafio.lembretes.dto.LembreteDTO;
 import com.desafio.lembretes.dto.PessoaDTO;
 import com.desafio.lembretes.entity.Pessoa;
 import com.desafio.lembretes.repository.PessoaRepository;
@@ -26,8 +27,8 @@ public class PessoaController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PessoaDTO>> getAllPessoas() {
-        return ResponseEntity.ok(pessoaService.findAll());
+    public List<PessoaDTO> getAllPessoas() {
+        return pessoaService.findAll();
     }
 
     @GetMapping("/{id}")
